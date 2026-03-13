@@ -55,7 +55,7 @@ export function useWeatherReminder(
     return new Date(lastWeatherLogTimestamp).getTime() + INTERVAL_MS;
   }, [lastWeatherLogTimestamp]);
 
-  // Send system + in-app notification
+  // Send system + in-app notification via service worker
   const sendReminder = useCallback(() => {
     if (hasNotifiedRef.current) return;
     hasNotifiedRef.current = true;
@@ -64,24 +64,21 @@ export function useWeatherReminder(
       "Notification" in window &&
       Notification.permission === "granted"
     ) {
-      try {
-        const notification = new Notification("Time for a weather check! 🌤", {
-          body: "It's been 30 minutes. Tap to log current conditions.",
-          icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌤</text></svg>",
-          tag: "weather-reminder",
-          requireInteraction: false,
+      navigator.serviceWorker?.ready
+        .then((reg) =>
+          reg.showNotification("Time for a weather check! 🌤", {
+            body: "It's been 30 minutes. Tap to log current conditions.",
+            icon: "/pwa-192.png",
+            tag: "weather-reminder",
+            renotify: true,
+          })
+        )
+        .catch(() => {
+          setShowInAppReminder(true);
         });
-        notification.onclick = () => {
-          window.focus();
-          onNavigateToWeather();
-          notification.close();
-        };
-      } catch {
-        setShowInAppReminder(true);
-      }
     }
     setShowInAppReminder(true);
-  }, [onNavigateToWeather]);
+  }, []);
 
   // When lastWeatherLogTimestamp changes (new log saved), reset notification flag
   useEffect(() => {
@@ -149,6 +146,47 @@ export function useWeatherReminder(
       if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
     };
   }, [enabled, lastWeatherLogTimestamp]);
+
+  // Hand off timer to service worker when app goes to background
+  useEffect(() => {
+    if (!enabled) return;
+
+    const handleVisibility = () => {
+      const sw = navigator.serviceWorker?.controller;
+      if (!sw) return;
+
+      if (document.visibilityState === "hidden") {
+        // App going to background — tell SW to schedule notification for remaining time
+        const deadline = getDeadline();
+        if (deadline && !hasNotifiedRef.current) {
+          const remaining = deadline - Date.now();
+          if (remaining > 0) {
+            sw.postMessage({
+              type: "SCHEDULE_WEATHER_NOTIFICATION",
+              delayMs: remaining,
+            });
+          }
+        }
+      } else {
+        // App returning to foreground — cancel SW timer (main-thread timer resumes)
+        sw.postMessage({ type: "CANCEL_WEATHER_NOTIFICATION" });
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
+  }, [enabled, getDeadline]);
+
+  // Listen for SW notificationclick → navigate to weather
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (event.data?.type === "NAVIGATE_TO_WEATHER") {
+        onNavigateToWeather();
+      }
+    };
+    navigator.serviceWorker?.addEventListener("message", handler);
+    return () => navigator.serviceWorker?.removeEventListener("message", handler);
+  }, [onNavigateToWeather]);
 
   const toggleReminder = useCallback(async () => {
     if (!enabled) {

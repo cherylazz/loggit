@@ -45,7 +45,10 @@ export default function App() {
   const [isUnlocked, setIsUnlocked] = useState(() => {
     return sessionStorage.getItem("loggit-auth") === "true";
   });
-  const [currentTab, setCurrentTab] = useState("home");
+  const [currentTab, setCurrentTab] = useState(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    return tab || "home";
+  });
   const [showVoiceTranscription, setShowVoiceTranscription] = useState(false);
   const [showSplash, setShowSplash] = useState(true);
   const [showCrewSetup, setShowCrewSetup] = useState(false);

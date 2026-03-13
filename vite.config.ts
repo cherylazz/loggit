@@ -9,28 +9,11 @@
       react(),
       VitePWA({
         registerType: 'autoUpdate',
-        workbox: {
+        strategies: 'injectManifest',
+        srcDir: 'src',
+        filename: 'sw.ts',
+        injectManifest: {
           globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
-          runtimeCaching: [
-            {
-              urlPattern: /^https:\/\/api\.open-meteo\.com\/.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'weather-api-cache',
-                expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 },
-                cacheableResponse: { statuses: [0, 200] },
-              },
-            },
-            {
-              urlPattern: /^https:\/\/marine-api\.open-meteo\.com\/.*/i,
-              handler: 'NetworkFirst',
-              options: {
-                cacheName: 'marine-api-cache',
-                expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 },
-                cacheableResponse: { statuses: [0, 200] },
-              },
-            },
-          ],
         },
         manifest: {
           name: 'LoggIT',
