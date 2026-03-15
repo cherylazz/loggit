@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 import { motion, AnimatePresence } from "motion/react";
-import { Clock } from "lucide-react";
+import { Clock, Wifi } from "lucide-react";
 import weatherIcon from "@/assets/weather-icon.png";
 import loggitIcon from "@/assets/loggit-icon.png";
 import telekomIcon from "@/assets/telekom-icon.png";
@@ -135,19 +135,24 @@ export function Demo3_WeatherTimer() {
               padding: "10px 20px 0",
             }}>
               <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontWeight: 500 }}>Deutsche Telekom</span>
-              <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                <div style={{ display: "flex", alignItems: "flex-end", gap: 1 }}>
-                  {[4, 6, 8, 10].map((h, i) => (
-                    <div key={i} style={{ width: 2.5, height: h, borderRadius: 0.5, background: "rgba(255,255,255,0.5)" }} />
+              <div style={{ display: "flex", alignItems: "center", gap: 3 }}>
+                <div style={{ display: "flex", alignItems: "flex-end", gap: 1, marginRight: 1 }}>
+                  {[5, 7, 9, 11].map((h, i) => (
+                    <div key={i} style={{ width: 2.5, height: h, borderRadius: 1, background: "rgba(255,255,255,0.5)" }} />
                   ))}
                 </div>
-                <span style={{ fontSize: 8, fontWeight: 700, color: "rgba(255,255,255,0.5)", margin: "0 2px" }}>4G</span>
-                <svg width="16" height="16" viewBox="0 0 16 16">
-                  <circle cx="8" cy="8" r="6" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
-                  <circle cx="8" cy="8" r="6" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="2"
-                    strokeDasharray={`${0.65 * 2 * Math.PI * 6} ${2 * Math.PI * 6}`}
-                    transform="rotate(-90 8 8)" strokeLinecap="round" />
-                </svg>
+                <span style={{ fontSize: 8.5, fontWeight: 700, color: "rgba(255,255,255,0.5)", marginRight: 2 }}>5G</span>
+                <Wifi size={11} color="rgba(255,255,255,0.5)" strokeWidth={2.5} />
+                <div style={{ display: "flex", alignItems: "center", gap: 2, marginLeft: 2 }}>
+                  <div style={{
+                    width: 20, height: 10, borderRadius: 2.5,
+                    border: "1.5px solid rgba(255,255,255,0.5)",
+                    position: "relative", overflow: "hidden",
+                  }}>
+                    <div style={{ position: "absolute", left: 1.5, top: 1.5, bottom: 1.5, width: "70%", borderRadius: 1, background: "rgba(255,255,255,0.5)" }} />
+                  </div>
+                  <div style={{ width: 1.5, height: 4, borderRadius: 1, background: "rgba(255,255,255,0.5)" }} />
+                </div>
                 <span style={{ fontSize: 11, color: "rgba(255,255,255,0.5)", fontWeight: 500, marginLeft: 2 }}>10:54</span>
               </div>
             </div>
