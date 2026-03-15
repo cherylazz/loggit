@@ -98,7 +98,7 @@ export function Demo5_CrewSetup() {
             <div style={{ paddingBottom: showKeyboard ? 4 : 32 }}>
               <div style={{ fontSize: 13, fontWeight: 600, color: "#888", marginBottom: 10 }}>Previous crew</div>
 
-              {/* Crew chips */}
+              {/* Crew chips + added crew */}
               {showChips && (
                 <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 14 }}>
                   {SAMPLE_CREW.map((name) => {
@@ -126,32 +126,30 @@ export function Demo5_CrewSetup() {
                       </motion.div>
                     );
                   })}
+                  <AnimatePresence>
+                    {addedCrew.map((name) => (
+                      <motion.div
+                        key={name}
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        style={{
+                          padding: "6px 14px",
+                          borderRadius: 20,
+                          background: "#DCFCE7",
+                          border: "1.5px solid #BBF7D0",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          color: "#166534",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        {name}
+                      </motion.div>
+                    ))}
+                  </AnimatePresence>
                 </div>
               )}
-
-              {/* Added crew tags */}
-              <AnimatePresence>
-                {addedCrew.map((name) => (
-                  <motion.div
-                    key={name}
-                    initial={{ scale: 0 }}
-                    animate={{ scale: 1 }}
-                    style={{
-                      display: "inline-flex",
-                      padding: "6px 14px",
-                      borderRadius: 20,
-                      background: "#DCFCE7",
-                      border: "1.5px solid #BBF7D0",
-                      fontSize: 13,
-                      fontWeight: 600,
-                      color: "#166534",
-                      marginBottom: 10,
-                    }}
-                  >
-                    {name}
-                  </motion.div>
-                ))}
-              </AnimatePresence>
 
               {/* Input */}
               <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
