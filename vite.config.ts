@@ -79,6 +79,13 @@
     build: {
       target: 'esnext',
       outDir: 'build',
+      rollupOptions: {
+        input: {
+          main: path.resolve(__dirname, 'index.html'),
+          'demos-v4': path.resolve(__dirname, 'demos-v4.html'),
+          'demo-embed': path.resolve(__dirname, 'demo-embed.html'),
+        },
+      },
     },
     server: {
       port: 3000,
