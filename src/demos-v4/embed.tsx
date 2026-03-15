@@ -35,6 +35,7 @@ createRoot(document.getElementById("demo-root")!).render(
       <DemoComponent />
     </PhoneFrame>
     <style>{`
+      html, body, #demo-root { background: transparent !important; }
       .hide-scrollbar::-webkit-scrollbar { display: none; }
       .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     `}</style>
